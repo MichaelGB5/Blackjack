@@ -598,6 +598,7 @@ function double() {
       currentHand++;
       updateControls();
     } else {
+      renderGame(false);  // Show dealer's hand
       endRound('bust');
     }
   } else {
@@ -724,10 +725,27 @@ function startRound() {
   renderGame(true);
   updateDisplay();
   
-  // Check for natural blackjack
+  // Check for dealer blackjack first if ace or 10-value card showing
+  const dealerUpCard = dealerHand[0];
+  if (dealerUpCard.value === 'A' || ['10', 'J', 'Q', 'K'].includes(dealerUpCard.value)) {
+    const dealerValue = calculateHandValue(dealerHand);
+    if (dealerValue === 21) {
+      renderGame(false); // Show dealer's hand immediately
+      const playerValue = calculateHandValue(playerHands[0]);
+      if (playerValue === 21) {
+        endRound('push'); // Both have blackjack
+      } else {
+        endRound('dealer_wins');
+      }
+      return;
+    }
+  }
+  
+  // Check for player natural blackjack
   if (calculateHandValue(playerHands[0]) === 21) {
     setTimeout(() => {
-      stand();
+      renderGame(false);
+      endRound('player_wins');
     }, 500);
   }
 }
@@ -783,6 +801,7 @@ function hit() {
       currentHand++;
       updateControls();
     } else {
+      renderGame(false);  // Show dealer's hand
       endRound('bust');
     }
   }
