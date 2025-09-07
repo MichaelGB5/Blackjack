@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BlackJack</title>
+<style>
+  body {
+    background: #1a1a1a;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .table {
+    background: #006400;
+    background-image: radial-gradient(circle at center, #008000, #004d00);
+    border-radius: 200px 200px 0 0;
+    padding: 60px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+    width: 1200px;
+    position: relative;
+    border: 20px solid #4a2810;
+    border-bottom: none;
+  }
+
+  .table::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/png;base64,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');
+    opacity: 0.02;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .settings-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: #1a1a1a;
+    border-left: 2px solid #4a2810;
+    padding: 20px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  .settings-bar.open {
+    transform: translateX(0);
+  }
+
+  .side-bets {
+    position: absolute;
+    left: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .side-bet {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #4a2810;
+    border-radius: 10px;
+    padding: 10px;
+    color: #ffd700;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .side-bet:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: scale(1.05);
+  }
+
+  .side-bet.active {
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .statistics {
+    position: absolute;
+    right: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #4a2810;
+    border-radius: 10px;
+    padding: 20px;
+    color: #fff;
+  }
+
+  .stats-item {
+    margin: 10px 0;
+    font-size: 14px;
+  }
+
+  .card-counting {
+    color: #ffd700;
+    font-weight: bold;
+  }
+
+  .hand {
+    min-height: 150px;
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .hand.current-hand {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .hand.current-hand::before {
+    content: 'Current Hand';
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffd700;
+    font-size: 14px;
+  }
+
+  .card {
+    width: 100px;
+    height: 140px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .card.hidden {
+    background: #a00;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #a00,
+      #a00 10px,
+      #800 10px,
+      #800 20px
+    );
+  }
+
+  .card.red {
+    color: #c00;
+  }
+
+  .card .value {
+    font-size: 28px;
+  }
+
+  .card .suit {
+    font-size: 36px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .card .corner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card .corner.top-left {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+
+  .card .corner.bottom-right {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    transform: rotate(180deg);
+  }
+
+  .controls {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  button {
+    background: #e5b13a;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: monospace;
+  }
+
+  button:hover {
+    background: #f7c350;
+    transform: translateY(-2px);
+  }
+
+  button:disabled {
+    background: #999;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .bet-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .chips {
+    display: flex;
+    gap: 10px;
+  }
+
+  .chip {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    border: 3px dashed white;
+  }
+
+  .chip:hover {
+    transform: scale(1.1);
+  }
+
+  .chip.red { background: #e74c3c; }
+  .chip.blue { background: #3498db; }
+  .chip.green { background: #2ecc71; }
+  .chip.purple { background: #9b59b6; }
+
+  .status {
+    font-size: 24px;
+    margin: 20px 0;
+    text-align: center;
+    min-height: 30px;
+  }
+
+  .player-info {
+    font-size: 20px;
+    margin: 10px 0;
+  }
+
+  .label {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #f7c350;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .win-animation {
+    animation: bounce 0.5s ease infinite;
+  }
+
+  #new-game {
+    background: #27ae60;
+  }
+
+  #hit, #stand {
+    min-width: 100px;
+  }
+
+  .result {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px 40px;
+    border-radius: 10px;
+    font-size: 36px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    text-align: center;
+    border: 2px solid #f7c350;
+  }
+
+  .result.show {
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+<div class="table">
+  <!-- Side Bets -->
+  <div class="side-bets">
+    <div class="side-bet" onclick="toggleSideBet('dealer-bust')" id="dealer-bust-bet">
+      Dealer Bust<br>
+      <span class="odds">3:2</span><br>
+      <span class="bet-amount">$0</span>
+    </div>
+    <div class="side-bet" onclick="toggleSideBet('dealer-18')" id="dealer-18-bet">
+      Total 18<br>
+      <span class="odds">2:1</span><br>
+      <span class="bet-amount">$0</span>
+    </div>
+    <div class="side-bet" onclick="toggleSideBet('dealer-19')" id="dealer-19-bet">
+      Total 19<br>
+      <span class="odds">2:1</span><br>
+      <span class="bet-amount">$0</span>
+    </div>
+    <div class="side-bet" onclick="toggleSideBet('dealer-20')" id="dealer-20-bet">
+      Total 20<br>
+      <span class="odds">2:1</span><br>
+      <span class="bet-amount">$0</span>
+    </div>
+    <div class="side-bet" onclick="toggleSideBet('dealer-21')" id="dealer-21-bet">
+      Total 21<br>
+      <span class="odds">3:1</span><br>
+      <span class="bet-amount">$0</span>
+    </div>
+  </div>
+
+  <!-- Statistics Panel -->
+  <div class="statistics">
+    <div class="stats-item">
+      Cards Remaining: <span id="cards-remaining">312</span>
+    </div>
+    <div class="stats-item">
+      Running Count: <span id="running-count" class="card-counting">0</span>
+    </div>
+    <div class="stats-item">
+      True Count: <span id="true-count" class="card-counting">0</span>
+    </div>
+    <div class="stats-item">
+      Decks Remaining: <span id="decks-remaining">6.0</span>
+    </div>
+  </div>
+
+  <div class="player-info">
+    Money: $<span id="money">1000</span> | Current Bet: $<span id="current-bet">0</span>
+  </div>
+  
+  <div class="bet-controls">
+    <div class="chips">
+      <div class="chip red" onclick="addToBet(5)">5</div>
+      <div class="chip blue" onclick="addToBet(10)">10</div>
+      <div class="chip green" onclick="addToBet(25)">25</div>
+      <div class="chip purple" onclick="addToBet(100)">100</div>
+    </div>
+    <button onclick="clearBet()">Clear Bet</button>
+    <button onclick="startRound()" id="deal-button">Deal</button>
+  </div>
+
+  <div class="label">Dealer's Hand</div>
+  <div class="hand" id="dealer-hand"></div>
+  
+  <div class="status" id="status"></div>
+  
+  <div class="label">Your Hand</div>
+  <div class="hand" id="player-hand"></div>
+  
+  <div class="controls">
+    <button id="hit" onclick="hit()" disabled>Hit</button>
+    <button id="stand" onclick="stand()" disabled>Stand</button>
+    <button id="double" onclick="double()" disabled>Double</button>
+    <button id="split" onclick="split()" disabled>Split</button>
+    <button id="new-game" onclick="resetGame()" style="display: none;">New Game</button>
+  </div>
+</div>
+
+<div class="result" id="result"></div>
+
+<script>
+const DECKS = 6;  // Number of decks in the shoe
+const suits = ['♥', '♦', '♣', '♠'];
+const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+let shoe = [];
+let playerHands = [[]];  // Array of hands for splitting
+let currentHand = 0;     // Index of current hand being played
+let dealerHand = [];
+let money = 1000;
+let currentBet = 0;
+let bets = [0];         // Array of bets for each hand
+let sideBets = {
+  'dealer-bust': 0,
+  'dealer-18': 0,
+  'dealer-19': 0,
+  'dealer-20': 0,
+  'dealer-21': 0
+};
+let runningCount = 0;
+let cardsDealt = 0;
+let gameInProgress = false;
+
+function createShoe() {
+  shoe.length = 0;
+  for (let d = 0; d < DECKS; d++) {
+    for (const suit of suits) {
+      for (const value of values) {
+        shoe.push({ suit, value });
+      }
+    }
+  }
+  // Shuffle the shoe
+  for (let i = shoe.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shoe[i], shoe[j]] = [shoe[j], shoe[i]];
+  }
+  runningCount = 0;
+  cardsDealt = 0;
+  updateCounts();
+}
+
+function updateCounts() {
+  const cardsRemaining = shoe.length;
+  const decksRemaining = cardsRemaining / 52;
+  const trueCount = Math.round((runningCount / decksRemaining) * 100) / 100;
+  
+  document.getElementById('cards-remaining').textContent = cardsRemaining;
+  document.getElementById('running-count').textContent = runningCount;
+  document.getElementById('true-count').textContent = trueCount;
+  document.getElementById('decks-remaining').textContent = decksRemaining.toFixed(1);
+}
+
+function updateCount(card) {
+  const value = card.value;
+  if (['10', 'J', 'Q', 'K', 'A'].includes(value)) {
+    runningCount -= 1;
+  } else if (['2', '3', '4', '5', '6'].includes(value)) {
+    runningCount += 1;
+  }
+  cardsDealt++;
+  updateCounts();
+}
+
+function toggleSideBet(betType) {
+  if (!gameInProgress && money >= 5) {  // Minimum side bet is $5
+    if (sideBets[betType] === 0) {
+      money -= 5;
+      sideBets[betType] = 5;
+    } else {
+      money += sideBets[betType];
+      sideBets[betType] = 0;
+    }
+    document.getElementById(betType + '-bet').classList.toggle('active');
+    document.querySelector(`#${betType}-bet .bet-amount`).textContent = `$${sideBets[betType]}`;
+    updateDisplay();
+  }
+}
+
+function addToBet(amount) {
+  if (!gameInProgress && money >= amount) {
+    currentBet += amount;
+    money -= amount;
+    updateDisplay();
+  }
+}
+
+function clearBet() {
+  if (!gameInProgress) {
+    money += currentBet;
+    currentBet = 0;
+    updateDisplay();
+  }
+}
+
+function createCardElement(card, hidden = false) {
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'card' + (hidden ? ' hidden' : '') + 
+    (card.suit === '♥' || card.suit === '♦' ? ' red' : '');
+  
+  if (!hidden) {
+    // Top left corner
+    const topCorner = document.createElement('div');
+    topCorner.className = 'corner top-left';
+    topCorner.innerHTML = `<div class="value">${card.value}</div><div>${card.suit}</div>`;
+    cardDiv.appendChild(topCorner);
+
+    // Center suit
+    const centerSuit = document.createElement('div');
+    centerSuit.className = 'suit';
+    centerSuit.textContent = card.suit;
+    cardDiv.appendChild(centerSuit);
+
+    // Bottom right corner
+    const bottomCorner = document.createElement('div');
+    bottomCorner.className = 'corner bottom-right';
+    bottomCorner.innerHTML = `<div class="value">${card.value}</div><div>${card.suit}</div>`;
+    cardDiv.appendChild(bottomCorner);
+  }
+
+  return cardDiv;
+}
+
+function drawCard() {
+  if (shoe.length === 0) {
+    createShoe();
+  }
+  const card = shoe.pop();
+  updateCount(card);
+  return card;
+}
+
+function double() {
+  if (!gameInProgress || money < bets[currentHand]) return;
+  
+  // Double the bet
+  money -= bets[currentHand];
+  bets[currentHand] *= 2;
+  updateDisplay();
+  
+  // Draw one card and stand
+  playerHands[currentHand].push(drawCard());
+  renderGame(true);
+  
+  const playerValue = calculateHandValue(playerHands[currentHand]);
+  if (playerValue > 21) {
+    if (currentHand < playerHands.length - 1) {
+      currentHand++;
+      updateControls();
+    } else {
+      endRound('bust');
+    }
+  } else {
+    if (currentHand < playerHands.length - 1) {
+      currentHand++;
+      updateControls();
+    } else {
+      setTimeout(() => stand(), 500);
+    }
+  }
+}
+
+function split() {
+  if (!gameInProgress || playerHands[currentHand].length !== 2 || money < bets[currentHand]) return;
+  
+  const hand = playerHands[currentHand];
+  if (hand[0].value !== hand[1].value) return;
+  
+  // Create new hand
+  playerHands.push([hand[1]]);
+  hand.pop();
+  bets.push(bets[currentHand]);
+  money -= bets[currentHand];
+  
+  // Deal one card to each hand
+  playerHands[currentHand].push(drawCard());
+  playerHands[playerHands.length - 1].push(drawCard());
+  
+  renderGame(true);
+  updateControls();
+  updateDisplay();
+}
+
+function calculateHandValue(hand) {
+  let value = 0;
+  let aces = 0;
+
+  for (const card of hand) {
+    if (card.value === 'A') {
+      aces += 1;
+    } else if (['K', 'Q', 'J'].includes(card.value)) {
+      value += 10;
+    } else {
+      value += parseInt(card.value);
+    }
+  }
+
+  // Add aces
+  for (let i = 0; i < aces; i++) {
+    if (value + 11 <= 21) {
+      value += 11;
+    } else {
+      value += 1;
+    }
+  }
+
+  return value;
+}
+
+function updateControls() {
+  const hand = playerHands[currentHand];
+  document.getElementById('hit').disabled = !gameInProgress;
+  document.getElementById('stand').disabled = !gameInProgress;
+  document.getElementById('double').disabled = !gameInProgress || money < bets[currentHand];
+  document.getElementById('split').disabled = !gameInProgress || hand.length !== 2 || 
+                                            hand[0].value !== hand[1].value || money < bets[currentHand];
+}
+
+function updateDisplay() {
+  document.getElementById('money').textContent = money;
+  document.getElementById('current-bet').textContent = bets.reduce((a, b) => a + b, 0);
+  
+  // Update deal button state
+  document.getElementById('deal-button').disabled = currentBet === 0 || gameInProgress;
+  
+  updateControls();
+}
+
+function showResult(message, isWin = false) {
+  const result = document.getElementById('result');
+  result.textContent = message;
+  result.classList.add('show');
+  if (isWin) result.classList.add('win-animation');
+  
+  setTimeout(() => {
+    result.classList.remove('show', 'win-animation');
+  }, 3000);  // Increased to 3 seconds to allow reading multi-hand results
+}
+
+function updateHandsDisplay() {
+  const handDiv = document.getElementById('player-hand');
+  handDiv.innerHTML = '';
+  
+  playerHands.forEach((hand, index) => {
+    const singleHandDiv = document.createElement('div');
+    singleHandDiv.className = 'hand' + (index === currentHand ? ' current-hand' : '');
+    
+    hand.forEach(card => {
+      singleHandDiv.appendChild(createCardElement(card));
+    });
+    
+    handDiv.appendChild(singleHandDiv);
+  });
+}
+
+function startRound() {
+  if (currentBet === 0) return;
+  
+  gameInProgress = true;
+  if (shoe.length < 52) {  // Reshuffle when less than 1 deck remains
+    createShoe();
+  }
+  playerHands = [[]];
+  currentHand = 0;
+  bets = [currentBet];
+  dealerHand = [];
+  
+  // Deal initial cards
+  playerHands[0].push(drawCard());
+  dealerHand.push(drawCard());
+  playerHands[0].push(drawCard());
+  dealerHand.push(drawCard());
+  
+  renderGame(true);
+  updateDisplay();
+  
+  // Check for natural blackjack
+  if (calculateHandValue(playerHands[0]) === 21) {
+    setTimeout(() => {
+      stand();
+    }, 500);
+  }
+}
+
+function renderGame(hideDealer = true) {
+  const dealerHandDiv = document.getElementById('dealer-hand');
+  const playerHandDiv = document.getElementById('player-hand');
+  
+  // Clear hands
+  dealerHandDiv.innerHTML = '';
+  playerHandDiv.innerHTML = '';
+  
+  // Render dealer's hand
+  dealerHand.forEach((card, index) => {
+    dealerHandDiv.appendChild(createCardElement(card, hideDealer && index === 1));
+  });
+  
+  // Render all player hands
+  playerHands.forEach((hand, index) => {
+    const handDiv = document.createElement('div');
+    handDiv.className = 'hand' + (index === currentHand ? ' current-hand' : '');
+    
+    hand.forEach(card => {
+      handDiv.appendChild(createCardElement(card));
+    });
+    
+    playerHandDiv.appendChild(handDiv);
+  });
+  
+  // Update status
+  const status = document.getElementById('status');
+  if (!hideDealer) {
+    let statusText = `Dealer: ${calculateHandValue(dealerHand)}`;
+    playerHands.forEach((hand, index) => {
+      statusText += ` | Hand ${index + 1}: ${calculateHandValue(hand)}`;
+    });
+    status.textContent = statusText;
+  } else {
+    status.textContent = `Current hand: ${calculateHandValue(playerHands[currentHand])}`;
+  }
+}
+
+function hit() {
+  if (!gameInProgress) return;
+  
+  playerHands[currentHand].push(drawCard());
+  const playerValue = calculateHandValue(playerHands[currentHand]);
+  
+  renderGame(true);
+  
+  if (playerValue > 21) {
+    if (currentHand < playerHands.length - 1) {
+      currentHand++;
+      updateControls();
+    } else {
+      endRound('bust');
+    }
+  }
+}
+
+function stand() {
+  if (!gameInProgress) return;
+  
+  if (currentHand < playerHands.length - 1) {
+    currentHand++;
+    updateControls();
+    renderGame(true);
+    return;
+  }
+  
+  // Reveal dealer's cards
+  renderGame(false);
+  
+  // Dealer draws until 17 or higher
+  let dealerValue = calculateHandValue(dealerHand);
+  while (dealerValue < 17) {
+    dealerHand.push(drawCard());
+    dealerValue = calculateHandValue(dealerHand);
+    renderGame(false);
+  }
+  
+  // Determine winner based on each hand
+  let anyHandWins = false;
+  let allHandsBust = true;
+  
+  playerHands.forEach((hand) => {
+    const value = calculateHandValue(hand);
+    if (value <= 21) allHandsBust = false;
+    if (value <= 21 && value > dealerValue) anyHandWins = true;
+  });
+
+  if (dealerValue > 21 && !allHandsBust) {
+    endRound('dealer_bust');
+  } else if (anyHandWins) {
+    endRound('player_wins');
+  } else if (allHandsBust) {
+    endRound('bust');
+  } else {
+    endRound('dealer_wins');
+  }
+}
+
+function endRound(result) {
+  gameInProgress = false;
+  let messages = [];
+  
+  // Process each hand
+  playerHands.forEach((hand, index) => {
+    const handValue = calculateHandValue(hand);
+    const dealerValue = calculateHandValue(dealerHand);
+    const bet = bets[index];
+    
+    if (result === 'bust' && index === currentHand) {
+      messages.push(`Hand ${index + 1}: Bust!`);
+    } else if (handValue > 21) {
+      messages.push(`Hand ${index + 1}: Bust!`);
+    } else if (result === 'dealer_bust' || dealerValue > 21) {
+      money += bet * 2;
+      messages.push(`Hand ${index + 1}: Wins! (Dealer busts)`);
+    } else if (handValue > dealerValue) {
+      money += bet * 2;
+      messages.push(`Hand ${index + 1}: Wins!`);
+    } else if (dealerValue > handValue) {
+      messages.push(`Hand ${index + 1}: Loses!`);
+    } else {
+      money += bet;
+      messages.push(`Hand ${index + 1}: Push!`);
+    }
+  });
+  
+  // Process side bets
+  const dealerValue = calculateHandValue(dealerHand);
+  
+  // Dealer bust side bet (3:2 payout)
+  if (dealerValue > 21 && sideBets['dealer-bust'] > 0) {
+    money += sideBets['dealer-bust'] * 2.5;
+    messages.push('Dealer Bust bet wins!');
+  }
+  
+  // Total value side bets
+  if (dealerValue <= 21) {
+    if (dealerValue === 21 && sideBets['dealer-21'] > 0) {
+      money += sideBets['dealer-21'] * 4;
+      messages.push('Total 21 bet wins!');
+    } else if (dealerValue === 20 && sideBets['dealer-20'] > 0) {
+      money += sideBets['dealer-20'] * 3;
+      messages.push('Total 20 bet wins!');
+    } else if (dealerValue === 19 && sideBets['dealer-19'] > 0) {
+      money += sideBets['dealer-19'] * 3;
+      messages.push('Total 19 bet wins!');
+    } else if (dealerValue === 18 && sideBets['dealer-18'] > 0) {
+      money += sideBets['dealer-18'] * 3;
+      messages.push('Total 18 bet wins!');
+    }
+  }
+  
+  // Reset bets and show results
+  currentBet = 0;
+  bets = [0];
+  sideBets = {
+    'dealer-bust': 0,
+    'dealer-18': 0,
+    'dealer-19': 0,
+    'dealer-20': 0,
+    'dealer-21': 0
+  };
+  
+  // Update side bet display
+  for (const bet in sideBets) {
+    document.getElementById(bet + '-bet').classList.remove('active');
+    document.querySelector(`#${bet}-bet .bet-amount`).textContent = '$0';
+  }
+  
+  showResult(messages.join('\n'), result === 'player_wins' || result === 'dealer_bust');
+  updateDisplay();
+  }
+  
+  // Show new game button if out of money
+  if (money === 0) {
+    document.getElementById('new-game').style.display = 'block';
+  }
+
+
+function resetGame() {
+  money = 1000;
+  currentBet = 0;
+  gameInProgress = false;
+  playerHands = [[]];
+  currentHand = 0;
+  bets = [0];
+  dealerHand = [];
+  
+  // Reset side bets
+  for (const bet in sideBets) {
+    sideBets[bet] = 0;
+    document.getElementById(bet + '-bet').classList.remove('active');
+    document.querySelector(`#${bet}-bet .bet-amount`).textContent = '$0';
+  }
+  
+  // Create new shoe
+  createShoe();
+  document.getElementById('new-game').style.display = 'none';
+  document.getElementById('dealer-hand').innerHTML = '';
+  document.getElementById('player-hand').innerHTML = '';
+  document.getElementById('status').textContent = '';
+  updateDisplay();
+}
+
+// Initialize the game
+createShoe();
+updateDisplay();
+</script>
+</body>
+</html>
